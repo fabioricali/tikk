@@ -32,7 +32,7 @@ describe('tikk', function () {
 
     it('play, stop after 1800', function (done) {
         const anim = new tikk((offset, elapsed)=>{
-            //console.log(offset, elapsed);
+            console.log(offset, elapsed);
         });
 
         anim.play();
