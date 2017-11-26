@@ -4,26 +4,50 @@ class Tikk {
 
     constructor(fn, duration = 0) {
 
-        this._emitter = new Flak();
+        Object.defineProperties(this, {
+            emitter: {
+                value: new Flak()
+            },
 
-        this.req = null;
+            req: {
+                writable: true,
+                value: null
+            },
 
-        this.progress = 0;
-        this.start = 0;
-        this.currentTime = 0;
-        this.elapsed = 0;
+            start: {
+                writable: true,
+                value: 0
+            },
 
-        this.tick = (timestamp = performance.now()) => {
+            elapsed: {
+                writable: true,
+                value: 0
+            },
+
+            currentTime: {
+                writable: true,
+                value: 0
+            },
+
+            state: {
+                writable: true,
+                value: null
+            }
+        });
+
+        this.tick = () => {
+            this.currentTime = this.state === 'pause'
+                ? this.currentTime
+                : performance.now();
+
             if (!this.start)
-                this.start = timestamp;
+                this.start = this.currentTime;
 
-            this.progress = timestamp - this.start;
-            this.currentTime = timestamp;
+            this.elapsed = this.currentTime - this.start;
 
-            fn();
+            fn(this.elapsed / duration, this.elapsed);
 
             this.req = requestAnimationFrame(this.tick);
-            this.elapsed = this.currentTime - this.start;
 
             if (duration && this.elapsed >= duration)
                 this.stop();
@@ -37,7 +61,8 @@ class Tikk {
      * @returns {Tikk}
      */
     play() {
-        this._emitter.fire('play');
+        this.emitter.fire('play');
+        this.state = 'play';
         this.tick();
         return this;
     }
@@ -47,8 +72,9 @@ class Tikk {
      * @returns {Tikk}
      */
     pause() {
-        this._emitter.fire('pause');
+        this.emitter.fire('pause');
         cancelAnimationFrame(this.req);
+        this.state = 'pause';
         return this;
     }
 
@@ -58,8 +84,19 @@ class Tikk {
      */
     stop() {
         cancelAnimationFrame(this.req);
-        this._emitter.fire('stop', this.elapsed);
+        this.emitter.fire('stop', this.elapsed);
+        this.state = 'stop';
+        this.start = 0;
+        this.elapsed = 0;
         return this;
+    }
+
+    /**
+     * Returns state can be play, pause, stop
+     * @returns {string}
+     */
+    getState() {
+        return this.state;
     }
 
     /**
@@ -69,7 +106,45 @@ class Tikk {
      * @returns {Tikk}
      */
     on(eventName, callback) {
-        this._emitter.on.call(this._emitter, eventName, callback);
+        this.emitter.on.call(this.emitter, eventName, callback);
+        return this;
+    }
+
+    /**
+     * Suspends firing of the named event(s).
+     * @param eventName {...string} multiple event names to suspend
+     * @returns {Tikk}
+     */
+    suspendEvent(...eventName) {
+        this.emitter.suspendEvent.call(this.emitter, eventName);
+        return this;
+    }
+
+    /**
+     * Resumes firing of the named event(s).
+     * @param eventName {...string} multiple event names to resume.
+     * @returns {Tikk}
+     */
+    resumeEvent(...eventName) {
+        this.emitter.resumeEvent.call(this.emitter, eventName);
+        return this;
+    }
+
+    /**
+     * Suspends all events.
+     * @returns {Tikk}
+     */
+    suspendEvents() {
+        this.emitter.suspendEvents.call(this.emitter);
+        return this;
+    }
+
+    /**
+     * Resume all events.
+     * @returns {Tikk}
+     */
+    resumeEvents() {
+        this.emitter.resumeEvents.call(this.emitter);
         return this;
     }
 }

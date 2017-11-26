@@ -14,8 +14,8 @@ const banner = `
 module.exports = {
     entry: './index.js',
     output: {
-        filename: './dist/incache.min.js',
-        library: 'incache',
+        filename: './dist/tikk.min.js',
+        library: 'tikk',
         umdNamedDefine: true,
         libraryTarget: 'umd'
     },
@@ -51,7 +51,7 @@ module.exports = {
             },
             componentsOptions: {
                 InjectAsComment: {
-                    tag: 'InCache Build version: {version}'
+                    tag: 'Tikk Build version: {version}'
                 }
             }
         }),
