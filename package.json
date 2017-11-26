@@ -1,6 +1,6 @@
 {
     "name": "tikk",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Animation with requestAnimationFrame",
     "main": "dist/tikk.js",
     "scripts": {
@@ -10,7 +10,7 @@
         "build": "webpack --progress",
         "mocha.test": "mocha test",
         "test": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
-        "doc": "jsdoc2md --no-gfm src/tikk.js > api.md"
+        "doc": "jsdoc2md --template README.hbs --no-gfm --files src/tikk.js > README.md"
     },
     "repository": {
         "type": "git",
@@ -18,14 +18,17 @@
     },
     "keywords": [
         "requestanimationframe",
-        "animation"
+        "animation",
+        "timer",
+        "interval",
+        "timeout"
     ],
     "author": "Fabio Ricali",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/fabioricali/incache/issues"
+        "url": "https://github.com/fabioricali/tikk/issues"
     },
-    "homepage": "https://github.com/fabioricali/incache#readme",
+    "homepage": "https://github.com/fabioricali/tikk#readme",
     "devDependencies": {
         "babel-core": "^6.26.0",
         "babel-loader": "^7.1.2",

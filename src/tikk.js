@@ -1,8 +1,23 @@
 const Flak = require('flak');
 
+/**
+ * Tikk handler
+ * @typedef {Function} Tikk~handler
+ * @property {number} value - can be offset between 0 and 1 if duration is specified or delta (in ms) if no duration is specified. Usually 16 or 17
+ * @property {number} elapsed - elapsed time
+ */
+
+/**
+ * @class
+ */
 class Tikk {
 
-    constructor(fn, duration = 0) {
+    /**
+     * Create instance
+     * @param handler {Tikk~handler}
+     * @param duration {number}
+     */
+    constructor(handler, duration = 0) {
 
         Object.defineProperties(this, {
             emitter: {
@@ -29,6 +44,11 @@ class Tikk {
                 value: 0
             },
 
+            lastTime: {
+                writable: true,
+                value: 0
+            },
+
             state: {
                 writable: true,
                 value: null
@@ -45,9 +65,14 @@ class Tikk {
 
             this.elapsed = this.currentTime - this.start;
 
-            fn(this.elapsed / duration, this.elapsed);
+            handler(duration
+                ? this.elapsed / duration
+                : this.currentTime - this.lastTime
+                , this.elapsed);
 
             this.req = requestAnimationFrame(this.tick);
+
+            this.lastTime = this.currentTime;
 
             if (duration && this.elapsed >= duration)
                 this.stop();
@@ -72,7 +97,7 @@ class Tikk {
      * @returns {Tikk}
      */
     pause() {
-        this.emitter.fire('pause');
+        this.emitter.fire('pause', this.elapsed);
         cancelAnimationFrame(this.req);
         this.state = 'pause';
         return this;
@@ -147,6 +172,23 @@ class Tikk {
         this.emitter.resumeEvents.call(this.emitter);
         return this;
     }
+
+    /**
+     * Triggered at play
+     * @event Tikk#play
+     */
+
+    /**
+     * Triggered at pause
+     * @event Tikk#pause
+     * @param elapsed {number}
+     */
+
+    /**
+     * Triggered at stop
+     * @event Tikk#stop
+     * @param elapsed {number}
+     */
 }
 
 module.exports = Tikk;

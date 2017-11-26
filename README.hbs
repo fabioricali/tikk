@@ -1,0 +1,60 @@
+# Tikk
+Animation with requestAnimationFrame, inspired by <a target="_blank" href="https://github.com/davidkpiano/nm8">nm8</a>
+
+## Installation
+
+### Node.js
+```
+npm install tikk --save
+```
+
+### Browser
+
+#### Local
+```html
+<script src="node_modules/tikk/dist/tikk.min.js"></script>
+```
+
+#### CDN unpkg
+```html
+<script src="https://unpkg.com/tikk/dist/tikk.min.js"></script>
+```
+
+## Example
+```javascript
+const Tikk = require('tikk');
+
+// create animation
+const anim = new Tikk((value, elapsed) => {
+    console.log(value, elapsed);
+}, 2000)
+.on('play', () => {
+    console.log('play')
+})
+.on('pause', (elapsed) => {
+    console.log('pause', 'at', elapsed)
+})
+.on('stop', (elapsed) => {
+    console.log('stop', 'at', elapsed)
+});
+
+// play animation
+anim.play();
+
+// pause animation
+anim.pause();
+
+// stop animation
+anim.stop();
+```
+
+{{>main}}
+
+## Changelog
+You can view the changelog <a target="_blank" href="https://github.com/fabioricali/tikk/blob/master/CHANGELOG.md">here</a>
+
+## License
+Tikk is open-sourced software licensed under the <a target="_blank" href="http://opensource.org/licenses/MIT">MIT license</a>
+
+## Author
+<a target="_blank" href="http://rica.li">Fabio Ricali</a>
