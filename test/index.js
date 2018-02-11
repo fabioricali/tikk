@@ -3,18 +3,6 @@ if (typeof process === 'object') {
 }
 
 describe('tikk', function () {
-    beforeEach(function() {
-        if(typeof global === 'undefined') return;
-        global.performance = Date;
-        global.requestAnimationFrame = fn => {
-            return setImmediate(() => {
-                fn();
-            });
-        };
-        global.cancelAnimationFrame = id => {
-            return clearImmediate(id);
-        };
-    });
 
     it('play with 1800 duration', function (done) {
         const anim = new tikk((offset, elapsed)=>{
