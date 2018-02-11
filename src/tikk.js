@@ -1,5 +1,17 @@
 const Flak = require('flak');
 
+if(typeof global !== 'undefined'){
+    global.performance = Date;
+    global.requestAnimationFrame = fn => {
+        return setImmediate(() => {
+            fn();
+        });
+    };
+    global.cancelAnimationFrame = id => {
+        return clearImmediate(id);
+    };
+}
+
 /**
  * Tikk handler
  * @typedef {Function} Tikk~handler
